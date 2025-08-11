@@ -1,71 +1,105 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>إنشاء حساب</title>
+  <style>
+    body{font-family:Arial;display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#4facfe,#00f2fe);margin:0}
+    .card{background:#fff;padding:24px;border-radius:10px;width:360px;box-shadow:0 8px 24px rgba(0,0,0,0.15);text-align:center}
+    input{width:100%;padding:10px;margin:10px 0;border-radius:6px;border:1px solid #ccc}
+    button{width:100%;padding:12px;border-radius:8px;border:none;background:#357abd;color:#fff;font-weight:700;cursor:pointer}
+    .msg{margin-top:12px;min-height:20px}
+  </style>
 </head>
 <body>
-  <h2>إنشاء حساب</h2>
-  <input type="text" id="name" placeholder="الاسم"><br><br>
-  <input type="email" id="email" placeholder="البريد الإلكتروني"><br><br>
-  <input type="password" id="password" placeholder="كلمة المرور"><br><br>
-  <button onclick="signUp()">إنشاء حساب</button>
+  <div class="card">
+    <h3>إنشاء حساب</h3>
+    <input id="name" placeholder="الاسم (اختياري)" />
+    <input id="email" type="email" placeholder="البريد الإلكتروني" />
+    <input id="password" type="password" placeholder="كلمة المرور" />
+    <button id="signupBtn">إنشاء حساب</button>
+    <div class="msg" id="msg"></div>
+  </div>
 
   <script type="module">
-    // استيراد مكتبات Firebase
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // إعدادات Firebase
+    // --- ضع هنا إعدادات مشروعك (استبدل بالقيم عندك) ---
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
       projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
       appId: "YOUR_APP_ID"
     };
+    // -----------------------------------------------------
 
-    // تهيئة Firebase
-    const app = initializeApp(firebaseConfig);
+    // تجنّب تهيئة app مرتين
+    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    async function signUp() {
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+    const signupBtn = document.getElementById('signupBtn');
+    const msgEl = document.getElementById('msg');
+
+    signupBtn.addEventListener('click', async () => {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      msgEl.textContent = '';
+      if (!email || !password) { msgEl.textContent = 'الرجاء إدخال الإيميل وكلمة السر'; return; }
+
+      signupBtn.disabled = true;
+      signupBtn.textContent = 'جارٍ المعالجة...';
 
       try {
-        // محاولة إنشاء حساب جديد
+        // محاولة إنشاء حساب
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // حفظ البيانات تلقائياً في Firestore
-        await setDoc(doc(db, "users", user.uid), {
-          name: name,
+        // حفظ تلقائي في Firestore (مستند باسم uid)
+        await setDoc(doc(db, 'users', user.uid), {
+          name: name || '',
           email: email,
-          createdAt: new Date()
+          uid: user.uid,
+          createdAt: new Date().toISOString(),
+          blocked: false
         });
 
-        alert("تم إنشاء الحساب وتخزين البيانات بنجاح 🎉");
+        msgEl.style.color = 'green';
+        msgEl.textContent = 'تم إنشاء الحساب وحفظ البيانات ✅';
+        // توجيه أو إعادة تحميل
+        // window.location.href = 'login.html';
 
       } catch (error) {
+        console.error('signup error:', error);
+        // حالة الإيميل موجود بالفعل
         if (error.code === 'auth/email-already-in-use') {
-          // لو الإيميل موجود بالفعل → تسجيل دخول مباشر
           try {
+            // نحاول تسجيل الدخول مباشرة
             await signInWithEmailAndPassword(auth, email, password);
-            alert("تم تسجيل الدخول بحسابك الحالي ✅");
+            msgEl.style.color = 'green';
+            msgEl.textContent = 'الإيميل موجود وتم تسجيل الدخول بنجاح ✅';
+            // window.location.href = 'dashboard.html';
           } catch (loginError) {
-            alert("البريد موجود لكن كلمة المرور غير صحيحة ❌");
+            console.error('login after exists error:', loginError);
+            msgEl.style.color = 'crimson';
+            msgEl.textContent = 'الإيميل موجود لكن كلمة المرور غير صحيحة';
           }
         } else {
-          alert("خطأ: " + error.message);
+          msgEl.style.color = 'crimson';
+          msgEl.textContent = error.message || 'حدث خطأ';
         }
+      } finally {
+        signupBtn.disabled = false;
+        signupBtn.textContent = 'إنشاء حساب';
       }
-    }
+    });
   </script>
 </body>
 </html>
