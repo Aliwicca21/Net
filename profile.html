@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <title>الملف الشخصي</title>
+  <style>
+    body { font-family: Arial; direction: rtl; max-width: 600px; margin: auto; }
+    button { margin: 5px; padding: 8px 16px; }
+  </style>
+</head>
+<body>
+  <h2>الملف الشخصي</h2>
+  <div id="userData"></div>
+  <button id="editBtn">تعديل البيانات</button>
+  <button id="logoutBtn">تسجيل خروج</button>
+  <button id="deleteBtn" style="color:red;">حذف الحساب</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut, deleteUser } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCEDOqcalrRXDXG-Gkipms2fkkTLw2KUEQ",
+      authDomain: "ssss-b11c6.firebaseapp.com",
+      databaseURL: "https://ssss-b11c6-default-rtdb.firebaseio.com",
+      projectId: "ssss-b11c6",
+      storageBucket: "ssss-b11c6.firebasestorage.app",
+      messagingSenderId: "1011926445138",
+      appId: "1:1011926445138:web:aa35bf90712edb1e75838b",
+      measurementId: "G-CXJ122PY8J"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const userDataDiv = document.getElementById('userData');
+    const editBtn = document.getElementById('editBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const deleteBtn = document.getElementById('deleteBtn');
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // جلب بيانات المستخدم من Firestore
+        const userDoc =
