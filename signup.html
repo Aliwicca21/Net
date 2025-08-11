@@ -1,113 +1,71 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>إنشاء حساب</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #4facfe, #00f2fe);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      width: 300px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      text-align: center;
-    }
-    input {
-      width: 90%;
-      padding: 10px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      background-color: #4facfe;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      width: 100%;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #3c8fd1;
-    }
-    a {
-      display: block;
-      margin-top: 10px;
-      color: #4facfe;
-      text-decoration: none;
-    }
-  </style>
 </head>
 <body>
-
-<div class="container">
   <h2>إنشاء حساب</h2>
-  <input type="email" id="email" placeholder="البريد الإلكتروني" required>
-  <input type="password" id="password" placeholder="كلمة المرور" required>
-  <button id="signupBtn">إنشاء حساب</button>
-  <a href="index.html">لديك حساب؟ تسجيل دخول</a>
-</div>
+  <input type="text" id="name" placeholder="الاسم"><br><br>
+  <input type="email" id="email" placeholder="البريد الإلكتروني"><br><br>
+  <input type="password" id="password" placeholder="كلمة المرور"><br><br>
+  <button onclick="signUp()">إنشاء حساب</button>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <script type="module">
+    // استيراد مكتبات Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // إعداد Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyCEDOqcalrRXDXG-Gkipms2fkkTLw2KUEQ",
-    authDomain: "ssss-b11c6.firebaseapp.com",
-    projectId: "ssss-b11c6",
-    storageBucket: "ssss-b11c6.appspot.com",
-    messagingSenderId: "1011926445138",
-    appId: "1:1011926445138:web:aa35bf90712edb1e75838b",
-    measurementId: "G-CXJ122PY8J"
-  };
+    // إعدادات Firebase
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+    // تهيئة Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  // إنشاء حساب + تخزين بياناته تلقائيًا
-  document.getElementById("signupBtn").addEventListener("click", async () => {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
+    async function signUp() {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-    if (!email || !password) {
-      alert("الرجاء إدخال البريد الإلكتروني وكلمة المرور");
-      return;
+      try {
+        // محاولة إنشاء حساب جديد
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // حفظ البيانات تلقائياً في Firestore
+        await setDoc(doc(db, "users", user.uid), {
+          name: name,
+          email: email,
+          createdAt: new Date()
+        });
+
+        alert("تم إنشاء الحساب وتخزين البيانات بنجاح 🎉");
+
+      } catch (error) {
+        if (error.code === 'auth/email-already-in-use') {
+          // لو الإيميل موجود بالفعل → تسجيل دخول مباشر
+          try {
+            await signInWithEmailAndPassword(auth, email, password);
+            alert("تم تسجيل الدخول بحسابك الحالي ✅");
+          } catch (loginError) {
+            alert("البريد موجود لكن كلمة المرور غير صحيحة ❌");
+          }
+        } else {
+          alert("خطأ: " + error.message);
+        }
+      }
     }
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // حفظ البيانات في Firestore
-      await setDoc(doc(db, "users", user.uid), {
-        email: email,
-        uid: user.uid,
-        createdAt: new Date(),
-        blocked: false
-      });
-
-      alert("✅ تم إنشاء الحساب وحفظ البيانات بنجاح");
-      window.location.href = "login.html"; // توجيه لصفحة تسجيل الدخول
-    } catch (error) {
-      alert("❌ خطأ: " + error.message);
-    }
-  });
-</script>
-
+  </script>
 </body>
 </html>
