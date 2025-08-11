@@ -1,74 +1,61 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>تسجيل الدخول</title>
-<link rel="stylesheet" href="style.css" />
-<style>
-  .switch-link {
-    margin-top: 20px;
-    color: #357ABD;
-    cursor: pointer;
-    text-decoration: underline;
-    font-weight: 600;
-  }
-  .switch-link:hover {
-    color: #255eaa;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <title>تسجيل الدخول</title>
+  <style>body { font-family: Arial; direction: rtl; max-width: 400px; margin: auto; }</style>
 </head>
 <body>
+  <h2>تسجيل الدخول</h2>
+  <form id="loginForm">
+    <label>البريد الإلكتروني:<br><input type="email" id="email" required></label><br><br>
+    <label>كلمة المرور:<br><input type="password" id="password" required></label><br><br>
+    <button type="submit">تسجيل الدخول</button>
+  </form>
+  <p id="message" style="color:red;"></p>
+  <p>لا تملك حساب؟ <a href="signup.html">إنشاء حساب</a></p>
 
-<h2>تسجيل الدخول</h2>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
-<form id="login-form">
-  <input type="email" id="email" placeholder="البريد الإلكتروني" required />
-  <input type="password" id="password" placeholder="كلمة المرور" required />
-  <button type="submit">دخول</button>
-  <p class="error" id="error-msg"></p>
-</form>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCEDOqcalrRXDXG-Gkipms2fkkTLw2KUEQ",
+      authDomain: "ssss-b11c6.firebaseapp.com",
+      databaseURL: "https://ssss-b11c6-default-rtdb.firebaseio.com",
+      projectId: "ssss-b11c6",
+      storageBucket: "ssss-b11c6.firebasestorage.app",
+      messagingSenderId: "1011926445138",
+      appId: "1:1011926445138:web:aa35bf90712edb1e75838b",
+      measurementId: "G-CXJ122PY8J"
+    };
 
-<div>
-  <p>ليس لديك حساب؟ <a href="signup.html" class="switch-link">إنشاء حساب</a></p>
-</div>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-<script type="module">
-// استيراد Firebase
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    const form = document.getElementById('loginForm');
+    const messageEl = document.getElementById('message');
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCEDOqcalrRXDXG-Gkipms2fkkTLw2KUEQ",
-  authDomain: "ssss-b11c6.firebaseapp.com",
-  projectId: "ssss-b11c6",
-  storageBucket: "ssss-b11c6.firebasestorage.app",
-  messagingSenderId: "1011926445138",
-  appId: "1:1011926445138:web:aa35bf90712edb1e75838b",
-  measurementId: "G-CXJ122PY8J"
-};
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      messageEl.textContent = '';
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+      const email = form.email.value.trim();
+      const password = form.password.value;
 
-const form = document.getElementById('login-form');
-const errorMsg = document.getElementById('error-msg');
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        messageEl.style.color = 'green';
+        messageEl.textContent = 'تم تسجيل الدخول! جاري التحويل...';
 
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const email = form.email.value;
-  const password = form.password.value;
+        setTimeout(() => {
+          window.location.href = 'profile.html';
+        }, 1500);
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then(userCredential => {
-      alert("تم تسجيل الدخول بنجاح!");
-      window.location.href = "dashboard.html"; // وجه المستخدم بعد الدخول
-    })
-    .catch(error => {
-      errorMsg.textContent = error.message;
+      } catch(error) {
+        messageEl.textContent = 'خطأ: ' + error.message;
+      }
     });
-});
-</script>
-
+  </script>
 </body>
 </html>
