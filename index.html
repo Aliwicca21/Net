@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>تسجيل الدخول</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<h2>تسجيل الدخول</h2>
+
+<form id="login-form">
+  <input type="email" id="email" placeholder="البريد الإلكتروني" required />
+    <input type="password" id="password" placeholder="كلمة المرور" required />
+      <button type="submit">دخول</button>
+        <p class="error" id="error-msg"></p>
+        </form>
+
+        <script type="module">
+        // استيراد Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyCEDOqcalrRXDXG-Gkipms2fkkTLw2KUEQ",
+            authDomain: "ssss-b11c6.firebaseapp.com",
+              projectId: "ssss-b11c6",
+                storageBucket: "ssss-b11c6.firebasestorage.app",
+                  messagingSenderId: "1011926445138",
+                    appId: "1:1011926445138:web:aa35bf90712edb1e75838b",
+                      measurementId: "G-CXJ122PY8J"
+                      };
+
+                      const app = initializeApp(firebaseConfig);
+                      const auth = getAuth(app);
+
+                      const form = document.getElementById('login-form');
+                      const errorMsg = document.getElementById('error-msg');
+
+                      form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                          const email = form.email.value;
+                            const password = form.password.value;
+
+                              signInWithEmailAndPassword(auth, email, password)
+                                  .then(userCredential => {
+                                        alert("تم تسجيل الدخول بنجاح!");
+                                              window.location.href = "dashboard.html"; // عدل حسب وجهتك بعد الدخول
+                                                  })
+                                                      .catch(error => {
+                                                            errorMsg.textContent = error.message;
+                                                                });
+                                                                });
+                                                                </script>
+
+                                                                </body>
+                                                                </html>
