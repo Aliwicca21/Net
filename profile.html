@@ -4,21 +4,30 @@
   <meta charset="UTF-8" />
   <title>الملف الشخصي</title>
   <style>
-    body { font-family: Arial; direction: rtl; max-width: 600px; margin: auto; }
+    body { font-family: Arial; direction: rtl; max-width: 600px; margin: 30px auto; }
+    .field { margin-bottom: 15px; }
+    label { font-weight: bold; display: block; margin-bottom: 5px; }
     button { margin: 5px; padding: 8px 16px; }
+    #message { margin-top: 15px; color: red; }
   </style>
 </head>
 <body>
   <h2>الملف الشخصي</h2>
-  <div id="userData"></div>
+  <div id="userInfo">
+    <div class="field"><label>اسم المستخدم:</label><span id="username"></span></div>
+    <div class="field"><label>البريد الإلكتروني:</label><span id="email"></span></div>
+    <div class="field"><label>رقم الهاتف:</label><span id="phone"></span></div>
+    <div class="field"><label>تاريخ الميلاد:</label><span id="birthDate"></span></div>
+  </div>
   <button id="editBtn">تعديل البيانات</button>
   <button id="logoutBtn">تسجيل خروج</button>
   <button id="deleteBtn" style="color:red;">حذف الحساب</button>
+  <div id="message"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut, deleteUser } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCEDOqcalrRXDXG-Gkipms2fkkTLw2KUEQ",
@@ -35,12 +44,92 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const userDataDiv = document.getElementById('userData');
+    const usernameSpan = document.getElementById('username');
+    const emailSpan = document.getElementById('email');
+    const phoneSpan = document.getElementById('phone');
+    const birthDateSpan = document.getElementById('birthDate');
+    const messageDiv = document.getElementById('message');
     const editBtn = document.getElementById('editBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const deleteBtn = document.getElementById('deleteBtn');
 
+    let currentUser = null;
+
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // جلب بيانات المستخدم من Firestore
-        const userDoc =
+        currentUser = user;
+        emailSpan.textContent = user.email || "";
+
+        try {
+          const docRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            usernameSpan.textContent = data.username || "";
+            phoneSpan.textContent = data.phone || "";
+            birthDateSpan.textContent = data.birthDate || "";
+          } else {
+            messageDiv.textContent = "لا توجد بيانات شخصية محفوظة.";
+          }
+        } catch (error) {
+          messageDiv.textContent = "خطأ في جلب البيانات: " + error.message;
+        }
+      } else {
+        messageDiv.textContent = "يرجى تسجيل الدخول أولاً.";
+        // تحويل لصفحة تسجيل الدخول بعد 2 ثانية
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 2000);
+      }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+
+    editBtn.addEventListener('click', () => {
+      const newUsername = prompt("أدخل اسم المستخدم الجديد:", usernameSpan.textContent);
+      if (newUsername !== null) {
+        const newPhone = prompt("أدخل رقم الهاتف الجديد:", phoneSpan.textContent);
+        if (newPhone !== null) {
+          const newBirthDate = prompt("أدخل تاريخ الميلاد الجديد (YYYY-MM-DD):", birthDateSpan.textContent);
+          if (newBirthDate !== null) {
+            // تحديث البيانات في Firestore
+            updateDoc(doc(db, "users", currentUser.uid), {
+              username: newUsername.trim(),
+              phone: newPhone.trim(),
+              birthDate: newBirthDate.trim()
+            }).then(() => {
+              usernameSpan.textContent = newUsername.trim();
+              phoneSpan.textContent = newPhone.trim();
+              birthDateSpan.textContent = newBirthDate.trim();
+              messageDiv.style.color = "green";
+              messageDiv.textContent = "تم تحديث البيانات بنجاح.";
+            }).catch((error) => {
+              messageDiv.style.color = "red";
+              messageDiv.textContent = "خطأ في التحديث: " + error.message;
+            });
+          }
+        }
+      }
+    });
+
+    deleteBtn.addEventListener('click', async () => {
+      if (!confirm("هل أنت متأكد من حذف حسابك؟ هذا الإجراء لا يمكن التراجع عنه.")) return;
+
+      try {
+        // حذف بيانات المستخدم من Firestore أولاً
+        await deleteDoc(doc(db, "users", currentUser.uid));
+        // ثم حذف المستخدم من Firebase Auth
+        await deleteUser(currentUser);
+        alert("تم حذف الحساب بنجاح.");
+        window.location.href = "signup.html";
+      } catch (error) {
+        messageDiv.style.color = "red";
+        messageDiv.textContent = "خطأ في حذف الحساب: " + error.message;
+      }
+    });
+  </script>
+</body>
+</html>
