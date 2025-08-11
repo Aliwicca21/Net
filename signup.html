@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>إنشاء حساب</title>
 <link rel="stylesheet" href="style.css" />
+<style>
+  .switch-link {
+    margin-top: 20px;
+    color: #357ABD;
+    cursor: pointer;
+    text-decoration: underline;
+    font-weight: 600;
+  }
+  .switch-link:hover {
+    color: #255eaa;
+  }
+</style>
 </head>
 <body>
 
@@ -12,47 +24,51 @@
 
 <form id="signup-form">
   <input type="email" id="email" placeholder="البريد الإلكتروني" required />
-    <input type="password" id="password" placeholder="كلمة المرور" required />
-      <button type="submit">إنشاء حساب</button>
-        <p class="error" id="error-msg"></p>
-        </form>
+  <input type="password" id="password" placeholder="كلمة المرور" required />
+  <button type="submit">إنشاء حساب</button>
+  <p class="error" id="error-msg"></p>
+</form>
 
-        <script type="module">
-        // استيراد Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<div>
+  <p>لديك حساب؟ <a href="index.html" class="switch-link">تسجيل دخول</a></p>
+</div>
 
-        const firebaseConfig = {
-          apiKey: "AIzaSyCEDOqcalrRXDXG-Gkipms2fkkTLw2KUEQ",
-            authDomain: "ssss-b11c6.firebaseapp.com",
-              projectId: "ssss-b11c6",
-                storageBucket: "ssss-b11c6.firebasestorage.app",
-                  messagingSenderId: "1011926445138",
-                    appId: "1:1011926445138:web:aa35bf90712edb1e75838b",
-                      measurementId: "G-CXJ122PY8J"
-                      };
+<script type="module">
+// استيراد Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-                      const app = initializeApp(firebaseConfig);
-                      const auth = getAuth(app);
+const firebaseConfig = {
+  apiKey: "AIzaSyCEDOqcalrRXDXG-Gkipms2fkkTLw2KUEQ",
+  authDomain: "ssss-b11c6.firebaseapp.com",
+  projectId: "ssss-b11c6",
+  storageBucket: "ssss-b11c6.firebasestorage.app",
+  messagingSenderId: "1011926445138",
+  appId: "1:1011926445138:web:aa35bf90712edb1e75838b",
+  measurementId: "G-CXJ122PY8J"
+};
 
-                      const form = document.getElementById('signup-form');
-                      const errorMsg = document.getElementById('error-msg');
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-                      form.addEventListener('submit', (e) => {
-                        e.preventDefault();
-                          const email = form.email.value;
-                            const password = form.password.value;
+const form = document.getElementById('signup-form');
+const errorMsg = document.getElementById('error-msg');
 
-                              createUserWithEmailAndPassword(auth, email, password)
-                                  .then(userCredential => {
-                                        alert("تم إنشاء الحساب بنجاح!");
-                                              window.location.href = "login.html";
-                                                  })
-                                                      .catch(error => {
-                                                            errorMsg.textContent = error.message;
-                                                                });
-                                                                });
-                                                                </script>
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const email = form.email.value;
+  const password = form.password.value;
 
-                                                                </body>
-                                                                </html>
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(userCredential => {
+      alert("تم إنشاء الحساب بنجاح!");
+      window.location.href = "login.html"; // التوجيه لتسجيل الدخول بعد إنشاء الحساب
+    })
+    .catch(error => {
+      errorMsg.textContent = error.message;
+    });
+});
+</script>
+
+</body>
+</html>
