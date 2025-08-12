@@ -1,135 +1,119 @@
-/* ------------- خلفية الصفحة ------------ */
+/* --- الخلفية --- */
 body {
   margin: 0;
   padding: 0;
-  height: 100vh;
-  font-family: 'Montserrat', sans-serif;
-  background: linear-gradient(135deg, #4e54c8, #8f94fb);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f2f5;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
   direction: rtl;
-  color: #fff;
+  color: #050505;
 }
 
-/* ---------- حاوية النموذج ---------- */
+/* --- الحاوية الأساسية --- */
 .form-container {
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  padding: 50px 40px;
-  border-radius: 25px;
-  box-shadow: 0 20px 50px rgba(78, 84, 200, 0.6);
-  width: 400px;
-  max-width: 90vw;
+  background-color: #fff;
+  padding: 40px 50px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+  width: 380px;
+  max-width: 95vw;
   text-align: center;
-  transition: box-shadow 0.4s ease;
 }
 
-.form-container:hover {
-  box-shadow: 0 25px 60px rgba(78, 84, 200, 0.8);
-}
-
-/* --------- العنوان --------- */
+/* --- العنوان --- */
 .form-container h2 {
-  font-size: 34px;
-  font-weight: 900;
-  margin-bottom: 40px;
-  letter-spacing: 1.4px;
-  text-shadow: 0 3px 8px rgba(0,0,0,0.25);
-  color: #e0e4ff;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #1877f2; /* لون شعار فيسبوك */
 }
 
-/* --------- الوسوم --------- */
+/* --- الوسوم --- */
 .form-container label {
   display: block;
   text-align: right;
-  font-weight: 700;
-  margin-bottom: 8px;
-  font-size: 16px;
-  color: #d3d7ff;
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #65676b;
 }
 
-/* --------- الحقول --------- */
+/* --- حقول الإدخال --- */
 .form-container input[type="email"],
 .form-container input[type="password"],
 .form-container input[type="text"],
-.form-container input[type="date"],
-.form-container input[type="tel"] {
+.form-container input[type="tel"],
+.form-container input[type="date"] {
   width: 100%;
-  padding: 16px 20px;
-  border-radius: 15px;
-  border: none;
-  margin-bottom: 28px;
-  font-size: 17px;
-  color: #3a3f7a;
-  background-color: #f1f3ff;
-  box-shadow: inset 0 0 8px #a3a8f9;
-  transition: background-color 0.4s ease, box-shadow 0.4s ease;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  font-size: 15px;
+  border: 1.5px solid #dddfe2;
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
   box-sizing: border-box;
 }
 
 .form-container input:focus {
   outline: none;
-  background-color: #e3e7ff;
-  box-shadow: 0 0 12px 3px #5c63ff;
+  border-color: #1877f2;
+  box-shadow: 0 0 5px rgba(24, 119, 242, 0.5);
+  background-color: #f0f2f5;
 }
 
-/* --------- زر الإرسال --------- */
+/* --- زر الدخول --- */
 .form-container button {
   width: 100%;
-  padding: 18px 0;
-  background: linear-gradient(45deg, #5c63ff, #3a3f7a);
+  padding: 14px 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  background-color: #1877f2;
   border: none;
-  border-radius: 25px;
-  color: #f0f3ff;
-  font-size: 20px;
-  font-weight: 900;
-  letter-spacing: 1.1px;
+  border-radius: 6px;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(92, 99, 255, 0.75);
-  transition: background 0.35s ease, box-shadow 0.35s ease;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 10px rgb(24 119 242 / 0.6);
 }
 
 .form-container button:hover {
-  background: linear-gradient(45deg, #3a3f7a, #5c63ff);
-  box-shadow: 0 15px 40px rgba(58, 63, 122, 0.9);
+  background-color: #165fbb;
+  box-shadow: 0 6px 15px rgb(22 95 187 / 0.8);
 }
 
-/* --------- روابط التبديل بين صفحات تسجيل الدخول وإنشاء حساب --------- */
+/* --- روابط التحويل --- */
 .form-container .switch-link {
-  margin-top: 28px;
-  font-size: 15px;
-  color: #bec4ff;
-  user-select: none;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #65676b;
 }
 
 .form-container .switch-link a {
-  color: #a0a7ff;
-  font-weight: 700;
+  color: #1877f2;
+  font-weight: 600;
   text-decoration: none;
-  transition: color 0.3s ease;
 }
 
 .form-container .switch-link a:hover {
-  color: #f0f3ff;
   text-decoration: underline;
 }
 
-/* --------- رسائل الحالة (نجاح/خطأ) --------- */
+/* --- رسالة الخطأ / النجاح --- */
 .message {
-  margin-top: 20px;
-  font-weight: 700;
-  font-size: 16px;
-  min-height: 24px;
+  margin-top: 15px;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: 20px;
   user-select: none;
-  text-align: center;
 }
 
 .message.success {
-  color: #a5d6a7; /* أخضر */
+  color: #42b72a; /* أخضر فيسبوك */
 }
 
 .message.error {
-  color: #ef9a9a; /* أحمر */
+  color: #f02849; /* أحمر فيسبوك */
 }
