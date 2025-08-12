@@ -1,10 +1,10 @@
-/* خلفية عامة */
+/* ------------- خلفية الصفحة ------------ */
 body {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
   height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(135deg, #4e54c8, #8f94fb);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,112 +12,124 @@ body {
   color: #fff;
 }
 
-/* حاوية الفورم */
+/* ---------- حاوية النموذج ---------- */
 .form-container {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 40px 50px;
-  border-radius: 16px;
-  box-shadow: 0 8px 30px rgba(118, 75, 162, 0.5);
-  width: 360px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  padding: 50px 40px;
+  border-radius: 25px;
+  box-shadow: 0 20px 50px rgba(78, 84, 200, 0.6);
+  width: 400px;
+  max-width: 90vw;
   text-align: center;
+  transition: box-shadow 0.4s ease;
 }
 
-/* العنوان */
+.form-container:hover {
+  box-shadow: 0 25px 60px rgba(78, 84, 200, 0.8);
+}
+
+/* --------- العنوان --------- */
 .form-container h2 {
-  margin-bottom: 32px;
-  font-weight: 700;
-  font-size: 28px;
-  color: #e0d4f7;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  font-size: 34px;
+  font-weight: 900;
+  margin-bottom: 40px;
+  letter-spacing: 1.4px;
+  text-shadow: 0 3px 8px rgba(0,0,0,0.25);
+  color: #e0e4ff;
 }
 
-/* الوسوم (الليبل) */
+/* --------- الوسوم --------- */
 .form-container label {
   display: block;
   text-align: right;
+  font-weight: 700;
   margin-bottom: 8px;
-  font-weight: 600;
-  color: #d1c4e9;
-  font-size: 15px;
+  font-size: 16px;
+  color: #d3d7ff;
 }
 
-/* حقول الإدخال */
+/* --------- الحقول --------- */
 .form-container input[type="email"],
 .form-container input[type="password"],
 .form-container input[type="text"],
 .form-container input[type="date"],
 .form-container input[type="tel"] {
   width: 100%;
-  padding: 14px 18px;
+  padding: 16px 20px;
+  border-radius: 15px;
   border: none;
-  border-radius: 10px;
-  margin-bottom: 24px;
-  font-size: 16px;
-  color: #3c2f70;
-  background-color: #ede7f6;
-  transition: box-shadow 0.3s ease;
+  margin-bottom: 28px;
+  font-size: 17px;
+  color: #3a3f7a;
+  background-color: #f1f3ff;
+  box-shadow: inset 0 0 8px #a3a8f9;
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
   box-sizing: border-box;
 }
 
 .form-container input:focus {
   outline: none;
-  box-shadow: 0 0 8px 2px #7e57c2;
-  background-color: #f3e5f5;
+  background-color: #e3e7ff;
+  box-shadow: 0 0 12px 3px #5c63ff;
 }
 
-/* زر الإرسال */
+/* --------- زر الإرسال --------- */
 .form-container button {
-  background-color: #7e57c2;
-  color: #fff;
-  border: none;
-  padding: 16px 0;
   width: 100%;
-  font-size: 18px;
-  font-weight: 700;
-  border-radius: 14px;
+  padding: 18px 0;
+  background: linear-gradient(45deg, #5c63ff, #3a3f7a);
+  border: none;
+  border-radius: 25px;
+  color: #f0f3ff;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 1.1px;
   cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 14px rgba(126, 87, 194, 0.6);
+  box-shadow: 0 10px 30px rgba(92, 99, 255, 0.75);
+  transition: background 0.35s ease, box-shadow 0.35s ease;
 }
 
 .form-container button:hover {
-  background-color: #5e35b1;
-  box-shadow: 0 6px 20px rgba(94, 53, 177, 0.8);
+  background: linear-gradient(45deg, #3a3f7a, #5c63ff);
+  box-shadow: 0 15px 40px rgba(58, 63, 122, 0.9);
 }
 
-/* روابط الانتقال (مثلاً: إنشاء حساب / تسجيل دخول) */
+/* --------- روابط التبديل بين صفحات تسجيل الدخول وإنشاء حساب --------- */
 .form-container .switch-link {
-  margin-top: 20px;
-  font-size: 14px;
-  color: #d1c4e9;
+  margin-top: 28px;
+  font-size: 15px;
+  color: #bec4ff;
+  user-select: none;
 }
 
 .form-container .switch-link a {
-  color: #b39ddb;
+  color: #a0a7ff;
   font-weight: 700;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .form-container .switch-link a:hover {
-  color: #9575cd;
+  color: #f0f3ff;
   text-decoration: underline;
 }
 
-/* رسالة الخطأ أو النجاح */
+/* --------- رسائل الحالة (نجاح/خطأ) --------- */
 .message {
-  margin-top: 12px;
-  font-size: 15px;
+  margin-top: 20px;
   font-weight: 700;
-  min-height: 22px;
-  color: #ffccbc; /* لون افتراضي */
+  font-size: 16px;
+  min-height: 24px;
   user-select: none;
+  text-align: center;
 }
 
 .message.success {
-  color: #a5d6a7;
+  color: #a5d6a7; /* أخضر */
 }
 
 .message.error {
-  color: #ef9a9a;
+  color: #ef9a9a; /* أحمر */
 }
